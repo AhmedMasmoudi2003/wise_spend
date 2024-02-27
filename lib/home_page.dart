@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.school),
-                  label: 'School',
+                  label: 'test',
                 ),
               ],
             )));
