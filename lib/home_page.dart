@@ -1,3 +1,5 @@
+import "dart:developer";
+
 import "package:flutter/material.dart";
 import "package:wise_spend/transaction.dart";
 
@@ -88,6 +90,11 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> transactionsTab = [];
 
   void createTransactionsTab() {
+    transactionsTab.add(Card(
+        child: Center(
+            child: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () => addTransaction()))));
     for (var x in viewsTab) {
       transactionsTab.add(Transaction(
         amount: x['amount'] ?? '',
@@ -97,6 +104,33 @@ class _MyHomePageState extends State<MyHomePage> {
         name: x['name'] ?? '',
       ));
     }
+  }
+
+  void addTransaction() {
+    setState(() {
+      var x = {
+        'name': "NEWWWWWWW!",
+        'type': "Savings",
+        'amount': "15",
+        'date': "28/02/2024",
+        'category': "food",
+      };
+      viewsTab.add(x);
+      if (x['type'] == "income") {
+        viewsTabIncome.add(x);
+      } else if (x['type'] == "expense") {
+        viewsTabExpenses.add(x);
+      } else {
+        viewsTabSavings.add(x);
+      }
+      transactionsTab.add(const Transaction(
+        name: "NEWWWWWWW!",
+        type: "Savings",
+        amount: "15",
+        date: "28/02/2024",
+        category: "food",
+      ));
+    });
   }
 
   @override
@@ -132,23 +166,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: TabBarView(children: [
                     Container(
                       child: ListView.builder(
-                        itemCount: viewsTab.length,
+                        itemCount: transactionsTab.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Transaction(
-                            name: viewsTab[index]['name'] ?? '',
-                            type: viewsTab[index]['type'] ?? '',
-                            amount: viewsTab[index]['amount'] ?? '',
-                            date: viewsTab[index]['date'] ?? '',
-                            category: viewsTab[index]['category'] ?? '',
-                          );
+                          return transactionsTab[index];
                         },
                       ),
                     ),
                     Container(
                       child: ListView.builder(
-                        itemCount: transactionsTab.length,
+                        itemCount: viewsTabIncome.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return transactionsTab[index];
+                          return Transaction(
+                            name: viewsTabIncome[index]['name'] ?? '',
+                            type: viewsTabIncome[index]['type'] ?? '',
+                            amount: viewsTabIncome[index]['amount'] ?? '',
+                            date: viewsTabIncome[index]['date'] ?? '',
+                            category: viewsTabIncome[index]['category'] ?? '',
+                          );
                         },
                       ),
                     ),
