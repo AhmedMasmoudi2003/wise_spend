@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:wise_spend/transaction.dart";
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -14,45 +15,162 @@ class _MyHomePageState extends State<MyHomePage> {
     'Income',
     'Expenses',
     'Savings',
-    'All',
-    'Income',
-    'Expenses'
+    // 'Daily'
   ];
-  List<String> viewsTab = [
-    "Hello",
-    "World",
-    "how",
-    "are",
-    "you",
-    "Hello",
-    "World"
+  List<Map<String, String>> viewsTab = [
+    {
+      'name': "Taxi",
+      'type': "expense",
+      'amount': "15",
+      'date': "28/02/2024",
+      'category': "food",
+    },
+    {
+      'name': "test",
+      'type': "income",
+      'amount': "15",
+      'date': "28/02/2024",
+      'category': "food",
+    },
+    {
+      'name': "cake",
+      'type': "expense",
+      'amount': "15",
+      'date': "28/02/2024",
+      'category': "food",
+    },
+    {
+      'name': "sell article",
+      'type': "income",
+      'amount': "15",
+      'date': "28/02/2024",
+      'category': "food",
+    },
+    {
+      'name': "win devfest",
+      'type': "Savings",
+      'amount': "15",
+      'date': "28/02/2024",
+      'category': "food",
+    },
+    {
+      'name': "casque",
+      'type': "Savings",
+      'amount': "15",
+      'date': "28/02/2024",
+      'category': "food",
+    },
+    {
+      'name': "printings",
+      'type': "expense",
+      'amount': "15",
+      'date': "28/02/2024",
+      'category': "food",
+    }
   ];
+
+  List<Map<String, String>> viewsTabIncome = [];
+  List<Map<String, String>> viewsTabExpenses = [];
+  List<Map<String, String>> viewsTabSavings = [];
+
+  void sortViewsTab() {
+    for (var x in viewsTab) {
+      if (x['type'] == "income") {
+        viewsTabIncome.add(x);
+      } else if (x['type'] == "expense") {
+        viewsTabExpenses.add(x);
+      } else {
+        viewsTabSavings.add(x);
+      }
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    sortViewsTab();
+  }
 
   //The UI here!!!!------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 7,
+        length: 4,
         child: Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.white,
-              // title: Text(widget.title),
+              title: Center(child: Text("Manage Transactions")),
             ),
             //-------------------------------------------------------
             //----------------------------------------------------------------
             //----------------------------------------------------------------
             body: Center(
               child: Column(children: [
-                const Text(
-                  "Manage Transactions",
-                ),
+                // const Text(
+                //   "See the history of the transactions..",
+                // ),
                 TabBar(
                   isScrollable: true,
                   tabs: [for (var x in tabsNames) Tab(text: x)],
                 ),
                 Expanded(
                   child: TabBarView(children: [
-                    for (var x in viewsTab) Text(x),
+                    Container(
+                      child: ListView.builder(
+                        itemCount: viewsTab.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Transaction(
+                            name: viewsTab[index]['name'] ?? '',
+                            type: viewsTab[index]['type'] ?? '',
+                            amount: viewsTab[index]['amount'] ?? '',
+                            date: viewsTab[index]['date'] ?? '',
+                            category: viewsTab[index]['category'] ?? '',
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      child: ListView.builder(
+                        itemCount: viewsTabIncome.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Transaction(
+                            name: viewsTabIncome[index]['name'] ?? '',
+                            type: viewsTabIncome[index]['type'] ?? '',
+                            amount: viewsTabIncome[index]['amount'] ?? '',
+                            date: viewsTabIncome[index]['date'] ?? '',
+                            category: viewsTabIncome[index]['category'] ?? '',
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      child: ListView.builder(
+                        itemCount: viewsTabExpenses.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Transaction(
+                            name: viewsTabExpenses[index]['name'] ?? '',
+                            type: viewsTabExpenses[index]['type'] ?? '',
+                            amount: viewsTabExpenses[index]['amount'] ?? '',
+                            date: viewsTabExpenses[index]['date'] ?? '',
+                            category: viewsTabExpenses[index]['category'] ?? '',
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      child: ListView.builder(
+                        itemCount: viewsTabSavings.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Transaction(
+                            name: viewsTabSavings[index]['name'] ?? '',
+                            type: viewsTabSavings[index]['type'] ?? '',
+                            amount: viewsTabSavings[index]['amount'] ?? '',
+                            date: viewsTabSavings[index]['date'] ?? '',
+                            category: viewsTabSavings[index]['category'] ?? '',
+                          );
+                        },
+                      ),
+                    ),
                   ]),
                 ),
               ]),
@@ -63,16 +181,16 @@ class _MyHomePageState extends State<MyHomePage> {
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
+                  icon: Icon(Icons.list_alt),
+                  label: 'Transactions',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.business),
-                  label: 'Business',
+                  icon: Icon(Icons.bar_chart),
+                  label: 'Stats',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.school),
-                  label: 'test',
+                  icon: Icon(Icons.signpost),
+                  label: 'Goals',
                 ),
               ],
             )));
