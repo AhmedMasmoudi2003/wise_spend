@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Map<String, String>> viewsTabExpenses = [];
   List<Map<String, String>> viewsTabSavings = [];
 
-  void sortViewsTab() {
+  void splitViewsTab() {
     for (var x in viewsTab) {
       if (x['type'] == "income") {
         viewsTabIncome.add(x);
@@ -85,10 +85,25 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  List<Widget> transactionsTab = [];
+
+  void createTransactionsTab() {
+    for (var x in viewsTab) {
+      transactionsTab.add(Transaction(
+        amount: x['amount'] ?? '',
+        type: x['type'] ?? '',
+        date: x['date'] ?? '',
+        category: x['category'] ?? '',
+        name: x['name'] ?? '',
+      ));
+    }
+  }
+
   @override
   initState() {
     super.initState();
-    sortViewsTab();
+    splitViewsTab();
+    createTransactionsTab();
   }
 
   //The UI here!!!!------------------------------------------------
@@ -99,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.white,
-              title: Center(child: Text("Manage Transactions")),
+              title: const Center(child: Text("Manage Transactions")),
             ),
             //-------------------------------------------------------
             //----------------------------------------------------------------
@@ -131,15 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     Container(
                       child: ListView.builder(
-                        itemCount: viewsTabIncome.length,
+                        itemCount: transactionsTab.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Transaction(
-                            name: viewsTabIncome[index]['name'] ?? '',
-                            type: viewsTabIncome[index]['type'] ?? '',
-                            amount: viewsTabIncome[index]['amount'] ?? '',
-                            date: viewsTabIncome[index]['date'] ?? '',
-                            category: viewsTabIncome[index]['category'] ?? '',
-                          );
+                          return transactionsTab[index];
                         },
                       ),
                     ),
