@@ -1,0 +1,50 @@
+
+[   {
+      "name": "Taxi",
+      "type": "expense",
+      "amount'": "15",
+      "date": "28/02/2024",
+      "category": "food"
+    },
+    {
+      "name": "test",
+      "type": "income",
+      "amount": "15",
+      "date": "28/02/2024",
+      "category": "food"
+    },
+    {
+      "name": "cake",
+      "type": "expense",
+      "amount": "15",
+      "date": "28/02/2024",
+      "category": "food"
+    },
+    {
+      "name": "sell article",
+      "type": "income",
+      "amount": "15",
+      "date": "28/02/2024",
+      "category": "food"
+    },
+    {
+      "name": "win devfest",
+      "type": "Savings",
+      "amount": "15",
+      "date": "28/02/2024",
+      "category": "food"
+    },
+    {
+      "name": "casque",
+      "type": "Savings",
+      "amount": "15",
+      "date": "28/02/2024",
+      "category": "food"
+    },
+    {
+      "name": "printings",
+      "type": "expense",
+      "amount": "15",
+      "date": "28/02/2024",
+      "category": "food"
+    }]
