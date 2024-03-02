@@ -70,9 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
   //   }
   // }
 
-  Future<Map<String, dynamic>>? data;
+  // Future<Map<String, dynamic>>? data;
 
-  Future<Map<String, dynamic>> readJson() async {
+  Future<List<dynamic>> readJson() async {
     final String response =
         await rootBundle.loadString('assets/transactions.json');
     final data = await json.decode(response);
@@ -81,6 +81,33 @@ class _MyHomePageState extends State<MyHomePage> {
     //   viewsTab = data;
     //   print(viewsTab);
     // });
+  }
+
+  Future<List<Map<String, dynamic>>> processData() async {
+    List<dynamic> data = await readJson();
+    List<Map<String, dynamic>> processedData = [];
+    for (var x in data) {
+      processedData.add({
+        'name': x['name'],
+        'type': x['type'],
+        'amount': x['amount'],
+        'date': x['date'],
+        'category': x['category'],
+      });
+    }
+    return processedData;
+  }
+
+  void addTransaction() {
+    setState(() {
+      var x = {
+        'name': "NEWWWWWWW!",
+        'type': "Savings",
+        'amount': "15",
+        'date': "28/02/2024",
+        'category': "food",
+      };
+    });
   }
 
   // List<Widget> transactionsTab = [];
@@ -134,14 +161,14 @@ class _MyHomePageState extends State<MyHomePage> {
   //   }
   // }
 
-  @override
-  initState() {
-    super.initState();
-    Future<Map<String, dynamic>> data = readJson();
-    // fileToMap();
-    // splitViewsTab();
-    // createTransactionsTab();
-  }
+  // @override
+  // initState() {
+  //   super.initState();
+  //   Future<Map<String, dynamic>> dataLoaded = readJson();
+  //   // fileToMap();
+  //   // splitViewsTab();
+  //   // createTransactionsTab();
+  // }
 
   //The UI here!!!!------------------------------------------------
   @override
@@ -167,15 +194,45 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Expanded(
                   child: TabBarView(children: [
-                    Container(
-                        // child: ListView.builder(
-                        //   itemCount: transactionsTab.length,
-                        //   itemBuilder: (BuildContext context, int index) {
-                        //     return transactionsTab[index];
-                        //   },
-                        // ),
-                        child: FutureBuilder<Map<String, dynamic>>(
-                            future: data, builder: (context, snapshot) {})),
+                    Column(
+                      children: [
+                        Card(
+                            child: Center(
+                                child: IconButton(
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () => addTransaction()))),
+                        Expanded(
+                          child: FutureBuilder<List<Map<String, dynamic>>>(
+                              future: processData(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  return ListView.builder(
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Transaction(
+                                        name: snapshot.data![index]['name']!,
+                                        type: snapshot.data![index]['type']!,
+                                        amount: snapshot.data![index]['amount'],
+                                        date: snapshot.data![index]['date']!,
+                                        category: snapshot.data![index]
+                                            ['category']!,
+                                      );
+                                    },
+                                  );
+                                }
+                                return const Text('Something went wrong');
+                              }),
+                        )
+                      ],
+                    ),
                     Container(
                         // child: ListView.builder(
                         //   itemCount: viewsTabIncome.length,

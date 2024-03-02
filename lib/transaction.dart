@@ -14,7 +14,6 @@ class Transaction extends StatelessWidget {
     required this.amount,
     required this.date,
     required this.category,
-    String? expense,
   });
 
   Icon setIcon() {
