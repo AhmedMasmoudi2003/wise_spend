@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import "package:flutter/material.dart";
-import 'package:flutter/widgets.dart';
 import 'package:wise_spend/components/custom_text_field.dart';
 import 'package:wise_spend/components/custom_password_field.dart';
 

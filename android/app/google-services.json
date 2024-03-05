@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "75938728158",
+    "project_id": "wise-spend",
+    "storage_bucket": "wise-spend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75938728158:android:0acb6107e0e92548541a4f",
+        "android_client_info": {
+          "package_name": "com.example.wise_spend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpm6Ohds4RIfToxMh9hrTsfjMV9hcic28"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
