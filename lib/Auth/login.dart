@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import "package:flutter/material.dart";
+import 'package:flutter/widgets.dart';
 import 'package:wise_spend/components/custom_text_field.dart';
 import 'package:wise_spend/components/custom_password_field.dart';
 
@@ -70,11 +71,86 @@ class _LoginState extends State<Login> {
                 ],
               ),
             ),
-            MaterialButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, 'transactions');
-                },
-                child: Text("SignUp")),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    "Forgot Password?",
+                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: MaterialButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                onPressed: () {},
+                padding: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
+                color: Colors.deepPurple,
+                textColor: Colors.white,
+                child: const Text(
+                  "Login",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: MaterialButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                onPressed: () {},
+                padding: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
+                color: Colors.deepPurple[300],
+                textColor: Colors.white,
+                child: const Text(
+                  "Login with Google",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account?",
+                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, 'signUp');
+                    },
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(fontSize: 14, color: Colors.deepPurple),
+                    ),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
