@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
                     height: 20,
                   ),
                   CustomTextField(
-                    mailController: mailController,
+                    textController: mailController,
                     icon: Icon(Icons.mail),
                     labelText: "Email",
                     hintText: "Enter your email",

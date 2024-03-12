@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:wise_spend/components/custom_text_field.dart';
 import 'package:wise_spend/components/custom_password_field.dart';
@@ -14,10 +15,10 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool obscure1 = true;
   bool obscure2 = true;
-  TextEditingController? passwordController;
-  TextEditingController? passwordController2;
-  TextEditingController? mailController;
-  TextEditingController? usernameController;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController2 = TextEditingController();
+  TextEditingController mailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,16 +58,16 @@ class _SignUpState extends State<SignUp> {
                     height: 20,
                   ),
                   CustomTextField(
-                    mailController: mailController,
+                    textController: usernameController,
                     icon: Icon(Icons.person),
-                    labelText: "UserName",
+                    labelText: "Username",
                     hintText: "Enter your Username",
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   CustomTextField(
-                    mailController: mailController,
+                    textController: mailController,
                     icon: Icon(Icons.mail),
                     labelText: "Email",
                     hintText: "Enter your email",
@@ -104,7 +105,24 @@ class _SignUpState extends State<SignUp> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    final credential = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                      email: mailController.text,
+                      password: passwordController.text,
+                    );
+                    Navigator.of(context).pushReplacementNamed('transactions');
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      print('The password provided is too weak.');
+                    } else if (e.code == 'email-already-in-use') {
+                      print('The account already exists for that email.');
+                    }
+                  } catch (e) {
+                    print(e);
+                  }
+                },
                 padding: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
                 color: Colors.deepPurple,
                 textColor: Colors.white,
@@ -128,7 +146,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, 'login');
+                      Navigator.pushReplacementNamed(context, 'transactions');
                     },
                     child: Text(
                       "Login",

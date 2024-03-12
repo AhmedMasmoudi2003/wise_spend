@@ -1,3 +1,4 @@
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import "package:wise_spend/components/transaction.dart";
@@ -63,6 +64,16 @@ class _TransactionsState extends State<Transactions> {
             appBar: AppBar(
               backgroundColor: Colors.white,
               title: const Center(child: Text("Manage Transactions")),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.exit_to_app),
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('login', (route) => false);
+                  },
+                ),
+              ],
             ),
             body: Center(
               child: Column(children: [
