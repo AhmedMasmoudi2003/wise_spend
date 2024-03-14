@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:wise_spend/components/custom_text_field.dart';
 import 'package:wise_spend/components/custom_password_field.dart';
@@ -13,8 +15,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool obscure = true;
-  TextEditingController? passwordController;
-  TextEditingController? mailController;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController mailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class _LoginState extends State<Login> {
                     height: 20,
                   ),
                   CustomPasswordField(
+                      passwordController: passwordController,
                       icon: Icon(Icons.lock),
                       labelText: "Password",
                       hintText: "Enter your password",
@@ -94,7 +97,23 @@ class _LoginState extends State<Login> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    final credential = await FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: mailController.text,
+                            password: passwordController.text);
+                    Navigator.of(context).pushReplacementNamed('transactions');
+                  } on FirebaseAuthException {
+                    AwesomeDialog(
+                      context: context,
+                      dialogType: DialogType.error,
+                      animType: AnimType.rightSlide,
+                      title: 'Error',
+                      desc: 'error in email or password',
+                    ).show();
+                  }
+                },
                 padding: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
                 color: Colors.deepPurple,
                 textColor: Colors.white,

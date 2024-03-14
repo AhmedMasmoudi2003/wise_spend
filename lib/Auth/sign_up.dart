@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:wise_spend/components/custom_text_field.dart';
@@ -19,6 +20,23 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordController2 = TextEditingController();
   TextEditingController mailController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email address.';
+    }
+
+    // Regular expression for basic email validation
+    final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+    if (!emailRegExp.hasMatch(value)) {
+      return 'Please enter a valid email address.';
+    }
+
+    return null; // No error
+  }
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -57,79 +75,148 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(
                     height: 20,
                   ),
-                  CustomTextField(
-                    textController: usernameController,
-                    icon: Icon(Icons.person),
-                    labelText: "Username",
-                    hintText: "Enter your Username",
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    textController: mailController,
-                    icon: Icon(Icons.mail),
-                    labelText: "Email",
-                    hintText: "Enter your email",
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  CustomPasswordField(
-                      passwordController: passwordController,
-                      icon: Icon(Icons.lock),
-                      labelText: "Password",
-                      hintText: "Enter your password",
-                      obscure: obscure1),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  CustomPasswordField(
-                      passwordController: passwordController2,
-                      icon: Icon(Icons.lock),
-                      labelText: "Confirm Password",
-                      hintText: "Confirm your password",
-                      obscure: obscure2),
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                          textController: usernameController,
+                          icon: Icon(Icons.person),
+                          labelText: "Username",
+                          hintText: "Enter your Username",
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextField(
+                          textController: mailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email address.';
+                            }
+
+                            // Regular expression for basic email validation
+                            final emailRegExp =
+                                RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+                            if (!emailRegExp.hasMatch(value)) {
+                              return 'Please enter a valid email address.';
+                            }
+
+                            return null; // No error
+                          },
+                          icon: Icon(Icons.mail),
+                          labelText: "Email",
+                          hintText: "Enter your email",
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CustomPasswordField(
+                            passwordController: passwordController,
+                            icon: Icon(Icons.lock),
+                            labelText: "Password",
+                            hintText: "Enter your password",
+                            obscure: obscure1),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CustomPasswordField(
+                            passwordController: passwordController2,
+                            icon: Icon(Icons.lock),
+                            labelText: "Confirm Password",
+                            hintText: "Confirm your password",
+                            obscure: obscure2),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: MaterialButton(
+                            minWidth: double.infinity,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            onPressed: () async {
+                              if (formKey.currentState!.validate()) {
+                                print("valid");
+                              } else {
+                                if (passwordController.text !=
+                                    passwordController2.text) {
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.error,
+                                    animType: AnimType.rightSlide,
+                                    title: 'Error',
+                                    desc: 'Passwords do not match',
+                                  ).show();
+                                  return;
+                                }
+
+                                if (passwordController.text.length < 6) {
+                                  AwesomeDialog(
+                                    context: context,
+                                    dialogType: DialogType.error,
+                                    animType: AnimType.rightSlide,
+                                    title: 'Error',
+                                    desc:
+                                        'Password must be at least 6 characters long',
+                                  ).show();
+                                  return;
+                                }
+
+                                try {
+                                  final credential = await FirebaseAuth.instance
+                                      .createUserWithEmailAndPassword(
+                                    email: mailController.text,
+                                    password: passwordController.text,
+                                  );
+                                  Navigator.of(context)
+                                      .pushReplacementNamed('transactions');
+                                } on FirebaseAuthException catch (e) {
+                                  if (e.code == 'weak-password') {
+                                    print('The password provided is too weak.');
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.error,
+                                      animType: AnimType.rightSlide,
+                                      title: 'Error',
+                                      desc:
+                                          'The password provided is too weak.',
+                                    ).show();
+                                  } else if (e.code == 'email-already-in-use') {
+                                    print(
+                                        'The account already exists for that email.');
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.error,
+                                      animType: AnimType.rightSlide,
+                                      title: 'Error',
+                                      desc:
+                                          'The account already exists for that email.',
+                                    ).show();
+                                  }
+                                } catch (e) {
+                                  print(e);
+                                }
+                              }
+                            },
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 100, vertical: 10),
+                            color: Colors.deepPurple,
+                            textColor: Colors.white,
+                            child: const Text(
+                              "Sign Up",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: MaterialButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                onPressed: () async {
-                  try {
-                    final credential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                      email: mailController.text,
-                      password: passwordController.text,
-                    );
-                    Navigator.of(context).pushReplacementNamed('transactions');
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      print('The password provided is too weak.');
-                    } else if (e.code == 'email-already-in-use') {
-                      print('The account already exists for that email.');
-                    }
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-                padding: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-                color: Colors.deepPurple,
-                textColor: Colors.white,
-                child: const Text(
-                  "Sign Up",
-                  style: TextStyle(fontSize: 18),
-                ),
               ),
             ),
             SizedBox(
