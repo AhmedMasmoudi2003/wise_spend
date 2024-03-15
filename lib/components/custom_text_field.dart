@@ -13,12 +13,13 @@ class CustomTextField extends StatelessWidget {
   final Icon icon;
   final String labelText;
   final String hintText;
-  final String? validator;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: textController,
+      validator: validator,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

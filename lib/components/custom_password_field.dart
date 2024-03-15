@@ -7,13 +7,15 @@ class CustomPasswordField extends StatefulWidget {
       required this.icon,
       required this.labelText,
       required this.hintText,
-      required this.obscure});
+      required this.obscure,
+      this.validator});
 
   final TextEditingController? passwordController;
   final Icon icon;
   final String labelText;
   final String hintText;
   final bool obscure;
+  final String? Function(String?)? validator;
 
   @override
   State<CustomPasswordField> createState() => _CustomPasswordFieldState();
@@ -30,7 +32,8 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: widget.validator,
       obscureText: obscureText,
       controller: widget.passwordController,
       decoration: InputDecoration(

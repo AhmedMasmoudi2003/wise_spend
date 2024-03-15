@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'dart:ffi';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -36,7 +38,31 @@ class _SignUpState extends State<SignUp> {
     return null; // No error
   }
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password.';
+    }
+
+    // Minimum length check
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters long.';
+    }
+
+    // Character class checks
+    bool hasUppercase = value.contains(RegExp(r'[A-Z]'));
+    bool hasLowercase = value.contains(RegExp(r'[a-z]'));
+    bool hasNumbers = value.contains(RegExp(r'\d'));
+    bool hasSymbols = value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+
+    // Password is weak if it lacks at least 3 character classes
+    if (!hasUppercase || !hasLowercase || !hasNumbers && !hasSymbols) {
+      return 'Password must be a mix of uppercase, lowercase, numbers, and symbols.';
+    }
+
+    return null; // No error
+  }
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -80,31 +106,8 @@ class _SignUpState extends State<SignUp> {
                     child: Column(
                       children: [
                         CustomTextField(
-                          textController: usernameController,
-                          icon: Icon(Icons.person),
-                          labelText: "Username",
-                          hintText: "Enter your Username",
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CustomTextField(
                           textController: mailController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email address.';
-                            }
-
-                            // Regular expression for basic email validation
-                            final emailRegExp =
-                                RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-                            if (!emailRegExp.hasMatch(value)) {
-                              return 'Please enter a valid email address.';
-                            }
-
-                            return null; // No error
-                          },
+                          validator: validateEmail,
                           icon: Icon(Icons.mail),
                           labelText: "Email",
                           hintText: "Enter your email",
@@ -113,6 +116,7 @@ class _SignUpState extends State<SignUp> {
                           height: 20,
                         ),
                         CustomPasswordField(
+                            validator: validatePassword,
                             passwordController: passwordController,
                             icon: Icon(Icons.lock),
                             labelText: "Password",
@@ -140,33 +144,19 @@ class _SignUpState extends State<SignUp> {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             onPressed: () async {
+                              if (passwordController.text !=
+                                  passwordController2.text) {
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.error,
+                                  animType: AnimType.rightSlide,
+                                  title: 'Error',
+                                  desc: 'Passwords do not match',
+                                ).show();
+                                return;
+                              }
                               if (formKey.currentState!.validate()) {
                                 print("valid");
-                              } else {
-                                if (passwordController.text !=
-                                    passwordController2.text) {
-                                  AwesomeDialog(
-                                    context: context,
-                                    dialogType: DialogType.error,
-                                    animType: AnimType.rightSlide,
-                                    title: 'Error',
-                                    desc: 'Passwords do not match',
-                                  ).show();
-                                  return;
-                                }
-
-                                if (passwordController.text.length < 6) {
-                                  AwesomeDialog(
-                                    context: context,
-                                    dialogType: DialogType.error,
-                                    animType: AnimType.rightSlide,
-                                    title: 'Error',
-                                    desc:
-                                        'Password must be at least 6 characters long',
-                                  ).show();
-                                  return;
-                                }
-
                                 try {
                                   final credential = await FirebaseAuth.instance
                                       .createUserWithEmailAndPassword(
@@ -233,7 +223,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, 'transactions');
+                      Navigator.pushReplacementNamed(context, 'login');
                     },
                     child: Text(
                       "Login",
