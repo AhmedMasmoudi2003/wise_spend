@@ -43,9 +43,10 @@ class _MyAppState extends State<MyApp> {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: FirebaseAuth.instance.currentUser == null
-            ? 'login'
-            : 'transactions',
+        initialRoute: FirebaseAuth.instance.currentUser != null &&
+                FirebaseAuth.instance.currentUser!.emailVerified
+            ? 'transactions'
+            : 'login',
         routes: {
           'transactions': (context) => const Transactions(),
           'login': (context) => const Login(),

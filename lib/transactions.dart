@@ -2,8 +2,6 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import "package:wise_spend/components/transaction.dart";
-import "package:wise_spend/components/custom_text_field.dart";
-import "package:wise_spend/components/custom_password_field.dart";
 import 'dart:convert';
 import 'dart:async';
 

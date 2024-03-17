@@ -1,7 +1,4 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
-
-import 'dart:ffi';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -163,8 +160,9 @@ class _SignUpState extends State<SignUp> {
                                     email: mailController.text,
                                     password: passwordController.text,
                                   );
+
                                   Navigator.of(context)
-                                      .pushReplacementNamed('transactions');
+                                      .pushReplacementNamed('login');
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == 'weak-password') {
                                     print('The password provided is too weak.');

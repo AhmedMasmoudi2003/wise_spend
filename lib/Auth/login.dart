@@ -103,7 +103,19 @@ class _LoginState extends State<Login> {
                         .signInWithEmailAndPassword(
                             email: mailController.text,
                             password: passwordController.text);
-                    Navigator.of(context).pushReplacementNamed('transactions');
+                    if (credential.user!.emailVerified) {
+                      Navigator.of(context)
+                          .pushReplacementNamed('transactions');
+                    } else {
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.info,
+                        animType: AnimType.rightSlide,
+                        title: 'Verify your Email',
+                        desc:
+                            'A verification mail was sent, please verify your email to login',
+                      ).show();
+                    }
                   } on FirebaseAuthException {
                     AwesomeDialog(
                       context: context,
