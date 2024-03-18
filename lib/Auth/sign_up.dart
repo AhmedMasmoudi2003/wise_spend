@@ -59,6 +59,31 @@ class _SignUpState extends State<SignUp> {
     return null; // No error
   }
 
+  void showVerificationSnackbar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        backgroundColor: Colors.green, // You can customize the background color
+      ),
+    );
+  }
+
+  void sendVerificationEmail() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.sendEmailVerification();
+      // Show success message
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'too-many-requests') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'You\'ve recently requested a verification email. Please check your inbox or wait a few minutes before requesting another one.'),
+          ),
+        );
+      }
+    }
+  }
+
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -160,7 +185,9 @@ class _SignUpState extends State<SignUp> {
                                     email: mailController.text,
                                     password: passwordController.text,
                                   );
-
+                                  sendVerificationEmail();
+                                  showVerificationSnackbar(
+                                      "A verification mail was sent, check your inbox.");
                                   Navigator.of(context)
                                       .pushReplacementNamed('login');
                                 } on FirebaseAuthException catch (e) {

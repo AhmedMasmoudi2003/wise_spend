@@ -1,6 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import "package:wise_spend/components/transaction.dart";
 import 'dart:convert';
 import 'dart:async';
@@ -66,6 +67,14 @@ class _TransactionsState extends State<Transactions> {
                 IconButton(
                   icon: const Icon(Icons.exit_to_app),
                   onPressed: () async {
+                    GoogleSignIn googleSignIn = GoogleSignIn();
+                    try {
+                      await googleSignIn.disconnect();
+                      // Handle successful disconnection
+                    } on PlatformException catch (error) {
+                      print("Failed to disconnect: $error");
+                      // Handle the error appropriately (e.g., display a user-friendly message)
+                    }
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('login', (route) => false);
