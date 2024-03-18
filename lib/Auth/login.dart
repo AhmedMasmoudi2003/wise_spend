@@ -126,10 +126,20 @@ class _LoginState extends State<Login> {
             ),
             InkWell(
               onTap: () async {
-                await FirebaseAuth.instance
-                    .sendPasswordResetEmail(email: mailController.text);
-                showVerificationSnackbar(
-                    "a password reset email was sent to ${mailController.text}");
+                try {
+                  await FirebaseAuth.instance
+                      .sendPasswordResetEmail(email: mailController.text);
+                  showVerificationSnackbar(
+                      "a password reset email was sent to ${mailController.text}");
+                } catch (e) {
+                  AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.error,
+                    animType: AnimType.rightSlide,
+                    title: 'Error',
+                    desc: 'Please enter a valid email to reset the password',
+                  ).show();
+                }
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
