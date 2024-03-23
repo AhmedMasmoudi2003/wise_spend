@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wise_spend/add_transaction.dart';
 import 'package:wise_spend/transactions.dart';
 import 'package:wise_spend/Auth/login.dart';
 import 'package:wise_spend/Auth/sign_up.dart';
@@ -43,14 +44,16 @@ class _MyAppState extends State<MyApp> {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: FirebaseAuth.instance.currentUser != null &&
-                FirebaseAuth.instance.currentUser!.emailVerified
-            ? 'transactions'
-            : 'login',
+        // initialRoute: FirebaseAuth.instance.currentUser != null &&
+        //         FirebaseAuth.instance.currentUser!.emailVerified
+        //     ? 'transactions'
+        //     : 'login',
+        initialRoute: 'home',
         routes: {
           'transactions': (context) => const Transactions(),
           'login': (context) => const Login(),
           'signUp': (context) => const SignUp(),
+          'home': (context) => const AddTransaction(),
         });
   }
 }
